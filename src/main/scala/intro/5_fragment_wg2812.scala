@@ -9,14 +9,8 @@ case class FragmentWG2812() extends Component {
   val io = new Bundle {
     val colors = slave port Stream(Fragment(UInt(8 bit)))
     val idle = out port Bool()
-    val dout = out port Bool()
+    val dout = out port Bool().setAsReg().init(False)
   }
-
-  val wasLast = RegNextWhen(io.colors.last, io.colors.fire)
-  io.colors.setBlocked()
-
-  val dout = Bool()
-  io.dout := RegNext(dout) init False
 
   val timing = new Area {
     val counter = Reg(UInt(10 bit)) init 0
@@ -29,7 +23,9 @@ case class FragmentWG2812() extends Component {
     }
   }
 
-  dout := False
+  val wasLast = RegNextWhen(io.colors.last, io.colors.fire)
+  io.colors.setBlocked()
+  io.dout := False
 
   val busy = Reg(Bool()) init False
   io.idle := !busy
@@ -42,22 +38,22 @@ case class FragmentWG2812() extends Component {
     timing.counter := 0
     bitCnt := 8
 
-    dout := True
+    io.dout := True
   }
   val highDone = shiftReg(0).mux(True -> timing.longCntReached, False -> timing.shortCntReached)
   val lowDone = shiftReg(0) ? timing.shortCntReached | timing.longCntReached
   when(busy) {
     when(io.dout && highDone) {
       timing.counter := 0
-      dout := False
+      io.dout := False
     } elsewhen(!io.dout && lowDone) {
       shiftReg := True ## shiftReg.dropLow(1)
       timing.counter := 0
       bitCnt := bitCnt - 1
       when(bitCnt =/= 0) {
-        dout := True
+        io.dout := True
       } elsewhen(bitCnt === 0 && !wasLast) {
-        dout := True
+        io.dout := True
         // we will ignore the underflow case here and just document
         // that the user must not generate one ;-)
         shiftReg := io.colors.fragment.reversed.asBits
@@ -68,7 +64,7 @@ case class FragmentWG2812() extends Component {
         busy := False
       }
     } otherwise {
-      dout := io.dout
+      io.dout := io.dout
     }
   }
 }

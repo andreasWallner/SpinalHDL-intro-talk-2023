@@ -11,12 +11,9 @@ case class SimpleWG2812() extends Component {
     val valid = in port Bool()
     val ready = out port Bool()
 
-    val dout = out port Bool()
+    val dout = out port Bool().setAsReg().init(False)
     val idle = out port Bool()
   }
-
-  val dout = Bool()
-  io.dout := RegNext(dout) init False
 
   val timing = new Area {
     // notice the === comparison -> generates hardware that compares
@@ -33,7 +30,7 @@ case class SimpleWG2812() extends Component {
   }
 
   io.ready := False
-  dout := False
+  io.dout := False
 
   val busy = Reg(Bool()) init False
   io.idle := !busy
@@ -46,23 +43,23 @@ case class SimpleWG2812() extends Component {
     timing.counter := 0
     bitCnt := 3*8-1
 
-    dout := True
+    io.dout := True
   }
   when(busy) {
     when(io.dout && ((shiftReg(0) && timing.longCntReached) || (!shiftReg(0) && timing.shortCntReached))) {
       timing.counter := 0
-      dout := False
+      io.dout := False
     } elsewhen(!io.dout && ((shiftReg(0) && timing.shortCntReached) || (!shiftReg(0) && timing.longCntReached))) {
       shiftReg := True ## shiftReg.dropLow(1)
       timing.counter := 0
       bitCnt := bitCnt - 1
       when(bitCnt =/= 0) {
-        dout := True
+        io.dout := True
       } otherwise {
         busy := False
       }
     } otherwise {
-      dout := io.dout
+      io.dout := io.dout
     }
   }
 }
