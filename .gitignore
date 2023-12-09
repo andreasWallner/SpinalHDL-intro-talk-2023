@@ -1,0 +1,63 @@
+*.class
+*.log
+*.bak
+
+# sbt specific
+.cache/
+.history/
+.lib/
+dist/*
+target
+lib_managed/
+src_managed/
+project/boot/
+project/plugins/project/
+
+# Scala-IDE specific
+.scala_dependencies
+.worksheet
+.metals
+.bloop
+
+.idea
+out
+
+# Eclipse
+bin/
+.classpath
+.project
+.settings
+.cache-main
+
+#User
+/*.vhd
+/*.v
+/*.tcl
+/*.xdc
+/*.dot
+*.h
+*.html
+*.hpp
+*.xml
+*.cf
+*.json
+*.vcd
+!tester/src/test/resources/*.vhd
+
+simWorkspace/
+benchmarkWorkspace/
+tmp/
+
+# Project folder
+project
+!project/build.properties
+generated/*
+
+# python virtual env
+.env
+
+# SymbiYosys output files
+*.asc
+*.bin
+*.rpt
+*.blif
