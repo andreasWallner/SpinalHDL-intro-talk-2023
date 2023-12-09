@@ -1,17 +1,14 @@
-This repository contains gateware modules/test/etc written in SpinalHDL.
+# SpinalHDL intro talk code
 
-Currently the probably biggest part is comprised of "SpinalTap", an PC to
-embedded bus interface device that should/will support multiple interfaces
-like SPI/ISO7816/I2C but with a focus on feature needed for verification
-of embedded software.
+This repository contains the code for a talk given at the 2023 SpinalHDL
+online conference. The talk can be found uploaded on Youtube.
+TODO: link once it is uploaded...
 
-To use/build the project use sbt.
-Most entrypoints that generate gateware can be found in `src/main/scala/andreasWallner/components.scala`. Run these via sbt (e.g. `sbt runMain andreasWallner.ApbSpinalTap`)
-Most modules have unittests for verification, these can be run via `sbt test`
+It aims to give a quick intro/starting point for new users using a
+simple transmitter of signals for WG2812 LEDs as an example.
 
-To run more specific tests either limit to the test class name (e.g. `sbt testOnly andreasWallner.spinaltap.SpinalTapTest`) or to a specific test (`sbt testOnly andreasWallner.io.iso7816.TxRxCoreSim -- -z "RX no"`).
-To enable full output of stacktraces when necessary run `sbt testOnly ... -- -oF`.
+Note that code in this repository does not reflect best practices.
+It is written such that multiple concepts can be presented in a
+short time, building on each other.
 
-The current target platform of SpinalTap is a Xilinx Zynq, with software to make the
-device available via USB. The WIP Zynq firmware can be found in the spinalTapOs repository,
-the WIP PC library to interface with the device in the spinalTapLib repository.
+The presentation can be found in the root folder of the repository.
